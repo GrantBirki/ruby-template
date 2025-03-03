@@ -6,6 +6,12 @@ source script/env "$@"
 
 RUBY_ENV=production script/bootstrap
 
+# set the app dir as safe if we are running in CI (Actions)
+if [[ "$GITHUB_ACTIONS" == "true" ]]; then
+  echo "Setting safe.directory to /app (GitHub Actions)"
+  git config --global --add safe.directory /app
+fi
+
 # detect OS version and architecture
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     PLATFORM="linux"
