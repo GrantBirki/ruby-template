@@ -18,6 +18,10 @@ export RUBY_ENV
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 export DIR
 
+# The name of the repository is the name of the directory (usually)
+REPO_NAME=$(basename "$PWD")
+export REPO_NAME
+
 # set the ruby version to the one specified in the .ruby-version file
 [ -z "$RBENV_VERSION" ] && RBENV_VERSION=$(cat "$DIR/.ruby-version")
 export RBENV_VERSION
