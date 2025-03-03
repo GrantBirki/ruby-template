@@ -1,0 +1,53 @@
+#! /usr/bin/env bash
+
+set -e
+
+source script/env "$@"
+
+RUBY_ENV=production script/bootstrap
+
+# detect OS version and architecture
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    PLATFORM="linux"
+    VERSION=$(grep '^VERSION_CODENAME=' /etc/os-release | cut -d '=' -f2 || echo "unknown")
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    PLATFORM="macos"
+    VERSION=$(sw_vers -productVersion || echo "unknown")
+else
+    PLATFORM="unknown"
+    VERSION="unknown"
+fi
+
+ARCH=$(uname -m || echo "unknown")
+
+# setup a directory to store the built tarballs in
+tarball_dir="$DIR/tarballs"
+mkdir -p "$tarball_dir"
+
+# create a temporary directory for the build
+temp_dir=$(mktemp -d)
+trap "rm -rf $temp_dir" EXIT
+
+# set BUILD_SHA and BUILD_BRANCH if they are not already set
+: "${BUILD_SHA:=$(git rev-parse HEAD)}"
+: "${BUILD_BRANCH:=$(git rev-parse --abbrev-ref HEAD)}"
+
+# copy all files to the temporary directory
+git checkout-index --prefix="$temp_dir/" -a
+echo "$BUILD_SHA" > "$temp_dir/BUILD_SHA"
+echo "$BUILD_BRANCH" > "$temp_dir/BUILD_BRANCH"
+
+# determine tar verbosity
+TAR_VERBOSITY=${TAR_VERBOSITY:-"loud"}
+if [[ "$TAR_VERBOSITY" == "quiet" ]]; then
+    TAR_FLAGS="-zcf"
+else
+    TAR_FLAGS="-zcvf"
+fi
+
+# compress into a tarball
+tarball_name="${PLATFORM}-${ARCH}-${VERSION}-${BUILD_SHA}.tar.gz"
+tar $TAR_FLAGS "$tarball_dir/$tarball_name" -C "$temp_dir" .
+
+echo -e "${BLUE}Deployment tarball ${GREEN}created${OFF}: $tarball_dir/$tarball_name"
+echo -e "To ${PURPLE}unzip${OFF} the ${BLUE}tarball${OFF}, use (example):\n\ntar -zxvf $tarball_dir/$tarball_name -C /path/to/destination\n"
