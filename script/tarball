@@ -13,6 +13,9 @@ echo -e "📦 ${BLUE}Building tarball${OFF}"
 echo -e "- ${BLUE}BUILD_SHA${OFF}: $BUILD_SHA"
 echo -e "- ${BLUE}BUILD_BRANCH${OFF}: $BUILD_BRANCH\n"
 
+# setup a directory to store the built tarballs in
+mkdir -p "$TARBALL_DIR"
+
 # build and tag the docker image
 script/docker-build
 
