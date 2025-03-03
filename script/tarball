@@ -10,10 +10,15 @@ echo -e "📦 ${BLUE}Building tarball${OFF}"
 : "${BUILD_SHA:=$(git rev-parse HEAD)}"
 : "${BUILD_BRANCH:=$(git rev-parse --abbrev-ref HEAD)}"
 
+echo -e "- ${BLUE}BUILD_SHA${OFF}: $BUILD_SHA"
+echo -e "- ${BLUE}BUILD_BRANCH${OFF}: $BUILD_BRANCH\n"
+
 # build and tag the docker image
 script/docker-build
 
 docker run -e "BUILD_BRANCH=$BUILD_BRANCH" -e "BUILD_SHA=$BUILD_SHA" \
-  -v "$TARBALL_DIR:/app/tarballs" \
+  -v "$TARBALL_DIR:/app/tarballs:rw" \
   -v "$DIR/.git:/app/.git:ro" \
   "$REPO_NAME" script/build-deploy-tarball
+
+echo -e "✅ ${GREEN}Done${OFF} - tarball built${OFF}"
