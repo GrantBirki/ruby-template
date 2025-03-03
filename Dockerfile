@@ -8,7 +8,8 @@ WORKDIR /app
 
 # install system dependencies
 RUN apt-get -qq update && apt-get --no-install-recommends install -y \
-  build-essential
+  build-essential \
+  git
 
 # install core scripts
 COPY --chown=nonroot:nonroot script ./script
@@ -24,6 +25,9 @@ RUN RUBY_ENV=production script/bootstrap
 
 # copy the rest of the application
 COPY --chown=nonroot:nonroot . .
+
+# change ownership of /app directory to nonroot user
+RUN chown -R nonroot:nonroot /app
 
 # switch to the nonroot user
 USER nonroot

@@ -22,6 +22,9 @@ export DIR
 REPO_NAME=$(basename "$PWD")
 export REPO_NAME
 
+TARBALL_DIR="$DIR/tarballs"
+export TARBALL_DIR
+
 # set the ruby version to the one specified in the .ruby-version file
 [ -z "$RBENV_VERSION" ] && RBENV_VERSION=$(cat "$DIR/.ruby-version")
 export RBENV_VERSION

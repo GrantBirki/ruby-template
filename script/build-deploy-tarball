@@ -21,8 +21,7 @@ fi
 ARCH=$(uname -m || echo "unknown")
 
 # setup a directory to store the built tarballs in
-tarball_dir="$DIR/tarballs"
-mkdir -p "$tarball_dir"
+mkdir -p "$TARBALL_DIR"
 
 # create a temporary directory for the build
 temp_dir=$(mktemp -d)
@@ -47,7 +46,7 @@ fi
 
 # compress into a tarball
 tarball_name="${PLATFORM}-${ARCH}-${VERSION}-${BUILD_SHA}.tar.gz"
-tar $TAR_FLAGS "$tarball_dir/$tarball_name" -C "$temp_dir" .
+tar $TAR_FLAGS "$TARBALL_DIR/$tarball_name" -C "$temp_dir" .
 
-echo -e "${BLUE}Deployment tarball ${GREEN}created${OFF}: $tarball_dir/$tarball_name"
-echo -e "To ${PURPLE}unzip${OFF} the ${BLUE}tarball${OFF}, use (example):\n\ntar -zxvf $tarball_dir/$tarball_name -C /path/to/destination\n"
+echo -e "${BLUE}Deployment tarball ${GREEN}created${OFF}: $TARBALL_DIR/$tarball_name"
+echo -e "To ${PURPLE}unzip${OFF} the ${BLUE}tarball${OFF}, use (example):\n\ntar -zxvf $(basename "$TARBALL_DIR")/$tarball_name -C /path/to/destination\n"
