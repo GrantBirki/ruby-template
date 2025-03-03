@@ -8,8 +8,12 @@ RUBY_ENV=production script/bootstrap
 
 # set the app dir as safe if we are running in CI (Actions)
 if [[ "$GITHUB_ACTIONS" == "true" ]]; then
-  echo "Setting safe.directory to /app (GitHub Actions)"
+  echo "setting safe.directory to /app (GitHub Actions)"
   git config --global --add safe.directory /app
+
+  # Ensure the tarballs directory has the correct permissions for the docker container...
+  # ... to write to the tarball dir when running in CI (Actions)
+  chmod -R 666 "$TARBALL_DIR"
 fi
 
 # detect OS version and architecture
