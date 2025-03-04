@@ -29,6 +29,6 @@ fi
 docker run -e "BUILD_BRANCH=$BUILD_BRANCH" -e "BUILD_SHA=$BUILD_SHA" -e "GITHUB_ACTIONS=$GITHUB_ACTIONS" \
   -v "$TARBALL_DIR:/app/tarballs:rw" \
   -v "$DIR/.git:/app/.git:ro" \
-  "$REPO_NAME" script/build-deploy-tarball
+  "$REPO_NAME:latest" script/build-deploy-tarball
 
 echo -e "✅ ${GREEN}Done${OFF} - tarball built${OFF}"
