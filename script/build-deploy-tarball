@@ -43,6 +43,10 @@ echo "$BUILD_BRANCH" > "$temp_dir/BUILD_BRANCH"
 # enter the temporary directory, run script/bootstrap, and then go back to the original directory
 cd "$temp_dir"
 RUBY_ENV=production script/bootstrap
+
+# for debugging - view all the files in the temp dir (top level only)
+ls -lah
+
 cd -
 
 # determine tar verbosity
