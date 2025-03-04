@@ -93,6 +93,8 @@ This script:
     3. Adds commit metadata to the tarball by dropping `BUILD_SHA` and `BUILD_BRANCH` files in the root of the tarball
 3. Drops the tarball in the `tarballs/` directory at the root of the repository.
 
+From this point, you would have a file named `tarballs/linux-aarch64-bookworm-sha123abc.tar.gz` (just an example) that would exist either on your local machine (or in a CI system) that you could use to deploy the application to a server.
+
 ### Running the Application/Server
 
 Remember, this is just a template repository so this command won't really do anything. This template is a simple app that adds two numbers together. Run it with the following command:
