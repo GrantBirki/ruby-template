@@ -11,6 +11,12 @@ RUN apt-get -qq update && apt-get --no-install-recommends install -y \
   build-essential \
   git
 
+# set the BUNDLE_APP_CONFIG environment variable
+ENV BUNDLE_APP_CONFIG=/app/.bundle
+
+# copy bundler config
+COPY --chown=nonroot:nonroot .bundle ./.bundle
+
 # install core scripts
 COPY --chown=nonroot:nonroot script ./script
 
