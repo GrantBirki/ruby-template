@@ -5,7 +5,51 @@
 [![build](https://github.com/GrantBirki/ruby-template/actions/workflows/build.yml/badge.svg)](https://github.com/GrantBirki/ruby-template/actions/workflows/build.yml)
 [![tarball](https://github.com/GrantBirki/ruby-template/actions/workflows/tarball.yml/badge.svg)](https://github.com/GrantBirki/ruby-template/actions/workflows/tarball.yml)
 
+## About ⭐
+
+A template repository for building Ruby applications, services, and libraries.
+
+This project heavily leverages GitHub's architecture patterns such as:
+
+- [Scripts to Rule them All](https://github.blog/engineering/scripts-to-rule-them-all/)
+- Dependency Vendoring ([`vendor/cache/`](vendor/cache/))
+- Usage of [rbenv](https://github.com/rbenv/rbenv)
+
 ## Usage 💻
+
+All of the scripts defined below follow GitHub's [Scripts to Rule them All](https://github.blog/engineering/scripts-to-rule-them-all/) pattern. This pattern is a set of well-defined scripts that are used to perform common tasks such as bootstrapping, testing, linting, and more. These scripts are defined in the [`script/`](script/) directory.
+
+### Bootstrapping
+
+> First, ensure you have [rbenv](https://github.com/rbenv/rbenv) installed
+
+To bootstrap the project and install all dependencies (RubyGems), run the following command:
+
+```bash
+script/bootstrap
+```
+
+You can also alter this command to only install gems for production builds/environments:
+
+```bash
+RUBY_ENV=production script/bootstrap
+```
+
+### Testing
+
+After bootstrapping the project, you can run the test suite:
+
+```bash
+script/test
+```
+
+### Linting
+
+To lint the project, run the following command:
+
+```bash
+script/lint
+```
 
 ### Docker Builds
 
@@ -28,3 +72,29 @@ script/tarball
 This will build a docker container and run the `script/build-deploy-tarball` script inside the container. The result will be a tarball in the `tarballs/` directory at the root of the repository.
 
 Tarballs are popular for atomic deployments where the deployment is a simple matter of extracting the tarball to the correct location on the target machine and running the new version of the application. Tarball deploys help to shift the complexity of the deployment process from the target machine to the build server (in this case, the CI server - Actions).
+
+### Running the Application/Server
+
+Remember, this is just a template repository so this command won't really do anything. This template is a simple app that adds two numbers together. Run it with the following command:
+
+```bash
+script/server 1 2 # result: 3
+```
+
+### Build
+
+Define the specific build steps in the `script/build` script.
+
+A build script for Ruby might look something [like this](https://github.com/runwaylab/issue-db/blob/a6f8889e661bf4d2afc46366b8b4095fd9941ecf/.github/workflows/build.yml#L32-L45).
+
+### Releasing
+
+The `script/release` script is a starting point for pushing and tagging new releases on GitHub.
+
+## Vendoring
+
+This project adopts a "vendor everything" approach to dependencies. This means that all dependencies are vendored into the repository. This is done to ensure that the build is reproducible and that the build is not dependent on the availability of external dependencies (e.g. RubyGems.org).
+
+All Ruby Gems are committed to version control and stored in the [`vendor/cache/`](vendor/cache/) directory.
+
+This behavior is further controlled by the [`.bundle/config`](./.bundle/config) file.
