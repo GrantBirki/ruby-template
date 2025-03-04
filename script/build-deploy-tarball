@@ -4,8 +4,6 @@ set -e
 
 source script/env "$@"
 
-RUBY_ENV=production script/bootstrap
-
 # set the app dir as safe if we are running in CI (Actions)
 if [[ "$GITHUB_ACTIONS" == "true" ]]; then
   echo "setting safe.directory to /app (GitHub Actions)"
@@ -41,6 +39,11 @@ trap "rm -rf $temp_dir" EXIT
 git checkout-index --prefix="$temp_dir/" -a
 echo "$BUILD_SHA" > "$temp_dir/BUILD_SHA"
 echo "$BUILD_BRANCH" > "$temp_dir/BUILD_BRANCH"
+
+# enter the temporary directory, run script/bootstrap, and then go back to the original directory
+cd "$temp_dir"
+RUBY_ENV=production script/bootstrap
+cd -
 
 # determine tar verbosity
 TAR_VERBOSITY=${TAR_VERBOSITY:-"loud"}
