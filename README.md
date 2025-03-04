@@ -89,11 +89,13 @@ This script:
 1. Builds a Docker image using the `Dockerfile` in the root of the repository.
 2. Inside of the Docker container it:
     1. Install all dependencies
-    2. Creates a compressed tarball with all the source code and dependencies
+    2. Creates a compressed tarball with all the source code and dependencies. The dependenices are even pre-installed to save time when deploying the application. This means that the `vendor/cache/*.gem` files have been installed via bundler into the `vendor/gems/` directory.
     3. Adds commit metadata to the tarball by dropping `BUILD_SHA` and `BUILD_BRANCH` files in the root of the tarball
 3. Drops the tarball in the `tarballs/` directory at the root of the repository.
 
 From this point, you would have a file named `tarballs/linux-aarch64-bookworm-sha123abc.tar.gz` (just an example) that would exist either on your local machine (or in a CI system) that you could use to deploy the application to a server.
+
+See the [Dockerfile.tarball](spec/acceptance/Dockerfile.tarball) file for an example of how to unpack this pre-built tarball and run the application. It doesn't even require `script/bootstrap` to be called or `apt-get` packages to be installed (in most cases) - neat!
 
 ### Running the Application/Server
 
