@@ -1,3 +1,6 @@
+# this workflow is mainly a demo of how you can use the script/tarball command to create a tarball of the repo/project
+# adapt this to your own needs
+
 name: tarball
 
 on:
