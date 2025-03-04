@@ -4,4 +4,4 @@ set -e
 
 source script/env "$@"
 
-docker build --build-arg RUBY_VERSION=$RBENV_VERSION -t $REPO_NAME .
+docker build --build-arg "RUBY_VERSION=$RBENV_VERSION" -t "$REPO_NAME:latest" .

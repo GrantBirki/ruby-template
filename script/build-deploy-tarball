@@ -62,4 +62,5 @@ tarball_name="${PLATFORM}-${ARCH}-${VERSION}-${BUILD_SHA}.tar.gz"
 tar $TAR_FLAGS "$TARBALL_DIR/$tarball_name" -C "$temp_dir" .
 
 echo -e "${BLUE}Deployment tarball ${GREEN}created${OFF}: $TARBALL_DIR/$tarball_name"
+echo -e "\n${BLUE}Tarball size${OFF}: $(du -h "$TARBALL_DIR/$tarball_name" | cut -f1)\n"
 echo -e "To ${PURPLE}unzip${OFF} the ${BLUE}tarball${OFF}, use (example):\n\ntar -zxvf $(basename "$TARBALL_DIR")/$tarball_name -C /path/to/destination\n"
