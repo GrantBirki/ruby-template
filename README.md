@@ -35,6 +35,8 @@ You can also alter this command to only install gems for production builds/envir
 RUBY_ENV=production script/bootstrap
 ```
 
+Gems will be installed locally into the `vendor/gems/` directory at the root of this repository.
+
 ### Testing
 
 After bootstrapping the project, you can run the test suite:
@@ -43,6 +45,8 @@ After bootstrapping the project, you can run the test suite:
 script/test
 ```
 
+By default, this project enforces 100% code coverage. After running `script/test`, you can view the code coverage report in the `coverage/` directory at the root of the repository.
+
 ### Linting
 
 To lint the project, run the following command:
@@ -50,6 +54,8 @@ To lint the project, run the following command:
 ```bash
 script/lint
 ```
+
+The linter that this project uses is [rubocop](https://github.com/rubocop/rubocop) and its configuration is defined in the [`.rubocop.yml`](.rubocop.yml) file.
 
 ### Docker Builds
 
@@ -60,6 +66,11 @@ script/docker-build
 ```
 
 The result of this command will be a Docker image built with the name `ruby-template:latest`.
+
+This script:
+
+1. Builds a Docker image using the `Dockerfile` in the root of the repository.
+2. Tags the image with the `latest` tag.
 
 ### Building Tarballs
 
@@ -72,6 +83,15 @@ script/tarball
 This will build a docker container and run the `script/build-deploy-tarball` script inside the container. The result will be a tarball in the `tarballs/` directory at the root of the repository.
 
 Tarballs are popular for atomic deployments where the deployment is a simple matter of extracting the tarball to the correct location on the target machine and running the new version of the application. Tarball deploys help to shift the complexity of the deployment process from the target machine to the build server (in this case, the CI server - Actions).
+
+This script:
+
+1. Builds a Docker image using the `Dockerfile` in the root of the repository.
+2. Inside of the Docker container it:
+    1. Install all dependencies
+    2. Creates a compressed tarball with all the source code and dependencies
+    3. Adds commit metadata to the tarball by dropping `BUILD_SHA` and `BUILD_BRANCH` files in the root of the tarball
+3. Drops the tarball in the `tarballs/` directory at the root of the repository.
 
 ### Running the Application/Server
 
