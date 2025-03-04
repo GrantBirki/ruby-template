@@ -10,20 +10,6 @@ if [[ "$GITHUB_ACTIONS" == "true" ]]; then
   git config --global --add safe.directory /app
 fi
 
-# detect OS version and architecture
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    PLATFORM="linux"
-    VERSION=$(grep '^VERSION_CODENAME=' /etc/os-release | cut -d '=' -f2 || echo "unknown")
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    PLATFORM="macos"
-    VERSION=$(sw_vers -productVersion || echo "unknown")
-else
-    PLATFORM="unknown"
-    VERSION="unknown"
-fi
-
-ARCH=$(uname -m || echo "unknown")
-
 # setup a directory to store the built tarballs in
 mkdir -p "$TARBALL_DIR"
 

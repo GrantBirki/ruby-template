@@ -27,3 +27,6 @@ jobs:
 
       - name: tarball
         run: script/tarball
+
+      - name: tarball test
+        run: spec/acceptance/tarball-test

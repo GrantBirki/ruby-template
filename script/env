@@ -32,6 +32,24 @@ export RBENV_VERSION
 # set the path to include the rbenv shims if they exist
 [ -d "/usr/share/rbenv/shims" ] && export PATH=/usr/share/rbenv/shims:$PATH
 
+# detect OS version and architecture
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    PLATFORM="linux"
+    VERSION=$(grep '^VERSION_CODENAME=' /etc/os-release | cut -d '=' -f2 || echo "unknown")
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    PLATFORM="macos"
+    VERSION=$(sw_vers -productVersion || echo "unknown")
+else
+    PLATFORM="unknown"
+    VERSION="unknown"
+fi
+
+ARCH=$(uname -m || echo "unknown")
+
+export PLATFORM
+export VERSION
+export ARCH
+
 shopt -s nocasematch # enable case-insensitive matching
 if [[ "$RUBY_ENV" == "production" ]]; then
   export BUNDLE_WITHOUT="development"
