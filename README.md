@@ -32,7 +32,7 @@ script/bootstrap
 You can also alter this command to only install gems for production builds/environments:
 
 ```bash
-RUBY_ENV=production script/bootstrap
+script/bootstrap --production
 ```
 
 Gems will be installed locally into the `vendor/gems/` directory at the root of this repository.
@@ -103,6 +103,19 @@ Remember, this is just a template repository so this command won't really do any
 
 ```bash
 script/server # result: 3
+```
+
+If you bootstrapped the project for a production environment, you need to run the server in production mode:
+
+> Example shows bootstrapping the project for production and then running the server in production mode.
+
+```bash
+# if you want to run the server in production mode, you must first bootstrap the project for production
+# this will install only the production dependencies and skip development dependencies
+script/bootstrap --production
+
+# then you must also run the server in production mode
+script/server --production
 ```
 
 ### Build
