@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require "octokit"
 require_relative "example"
+
+_ = Octokit::Client.new(access_token: nil)
 
 first_value = 1
 second_value = 2
