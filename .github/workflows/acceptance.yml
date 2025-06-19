@@ -1,0 +1,29 @@
+name: acceptance
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  acceptance:
+    name: acceptance
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@ca041f971d66735f3e5ff1e21cc13e2d51e7e535 # pin@v1.233.0
+        with:
+          bundler-cache: true
+
+      - name: bootstrap
+        run: script/bootstrap
+
+      - name: acceptance
+        run: script/acceptance

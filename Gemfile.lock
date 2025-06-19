@@ -25,7 +25,12 @@ GEM
     date (3.4.1)
     diff-lcs (1.6.0)
     docile (1.4.1)
+    docker-api (2.4.0)
+      excon (>= 0.64.0)
+      multi_json
     drb (2.2.1)
+    excon (1.2.7)
+      logger
     faraday (2.13.1)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -44,6 +49,7 @@ GEM
     lint_roller (1.1.0)
     logger (1.7.0)
     minitest (5.25.5)
+    multi_json (1.15.0)
     net-http (0.6.0)
       uri
     octokit (10.0.0)
@@ -139,6 +145,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  docker-api
   irb
   octokit
   rspec
