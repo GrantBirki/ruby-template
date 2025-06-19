@@ -7,6 +7,7 @@ MAX_WAIT_TIME = 30 # how long to wait for the container to complete
 
 APP_NAME = "ruby-template"
 CONTAINER = Docker::Container.get(APP_NAME)
+CI = ENV.fetch("CI", "false") == "true"
 
 def logs(container)
   container.logs(stdout: true, stderr: true, timestamps: false)
@@ -18,7 +19,12 @@ describe "ruby-template" do
     start_time = Time.now
     while CONTAINER.info["State"]["Status"] != "exited"
       if Time.now - start_time > MAX_WAIT_TIME
+        puts CONTAINER.inspect
         raise "Container did not exit within #{MAX_WAIT_TIME} seconds"
+      end
+
+      if CI
+        puts CONTAINER.inspect
       end
 
       sleep 1
