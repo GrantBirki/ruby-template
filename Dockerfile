@@ -26,6 +26,9 @@ COPY --chown=nonroot:nonroot .ruby-version Gemfile Gemfile.lock ./
 # copy vendored gems
 COPY --chown=nonroot:nonroot vendor ./vendor
 
+# create the ./bin directory
+RUN mkdir -p ./bin
+
 # bootstrap the ruby environment
 RUN RUBY_ENV=production script/bootstrap
 

@@ -1,0 +1,8 @@
+services:
+  ruby-template:
+    container_name: ruby-template
+    restart: unless-stopped
+    command: ["script/server", "--production"]
+    build:
+      context: .
+      dockerfile: ./Dockerfile
