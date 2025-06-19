@@ -13,13 +13,13 @@ tarball_name="${PLATFORM}-${ARCH}-${VERSION}-${BUILD_SHA}.tar.gz"
 docker build --build-arg "RUBY_VERSION=$RBENV_VERSION" --build-arg "TARBALL=tarballs/$tarball_name" -t "$REPO_NAME-tarball-test:latest" .
 
 # Run the container and capture the output
-result=$(docker run --rm "$REPO_NAME-tarball-test:latest" bash -c "/app/script/server 2 3")
+result=$(docker run --rm "$REPO_NAME-tarball-test:latest" bash -c "/app/script/server --production")
 
-# Check if the result is exactly 5
-if [[ "$result" == "5" ]]; then
-    echo -e "\n✅ Test passed: Output is 5 as expected"
+# Check if the result is exactly 3
+if [[ "$result" == "3" ]]; then
+    echo -e "\n✅ Test passed: Output is 3 as expected"
     exit 0
 else
-    echo -e "\n❌ Test failed: Expected output to be 5, but got: $result"
+    echo -e "\n❌ Test failed: Expected output to be 3, but got: $result"
     exit 1
 fi

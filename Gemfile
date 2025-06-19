@@ -5,6 +5,7 @@ source "https://rubygems.org"
 gem "octokit"
 
 group :development do
+  gem "docker-api"
   gem "irb"
   gem "rspec"
   gem "rubocop"
