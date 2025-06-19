@@ -99,10 +99,10 @@ See the [Dockerfile.tarball](spec/acceptance/Dockerfile.tarball) file for an exa
 
 ### Running the Application/Server
 
-Remember, this is just a template repository so this command won't really do anything. This template is a simple app that adds two numbers together. Run it with the following command:
+Remember, this is just a template repository so this command won't really do anything. This template is a simple app that adds the numbers `1` and `2` together. Run it with the following command:
 
 ```bash
-script/server 1 2 # result: 3
+script/server # result: 3
 ```
 
 ### Build

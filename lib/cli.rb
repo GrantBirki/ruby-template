@@ -2,9 +2,9 @@
 
 require_relative "example"
 
-first = ARGV[0].to_i
-second = ARGV[1].to_i
+first_value = 1
+second_value = 2
 
 rbt = RubyTemplate.new
 
-puts rbt.simple_addition(first, second)
+puts rbt.simple_addition(first_value, second_value)
