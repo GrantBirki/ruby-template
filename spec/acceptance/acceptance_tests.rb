@@ -24,7 +24,8 @@ describe "ruby-template" do
       end
 
       if CI
-        puts CONTAINER.inspect
+        puts "CONTAINER.inspect: #{CONTAINER.inspect}"
+        puts "container logs: #{logs(CONTAINER)}"
       end
 
       sleep 1
