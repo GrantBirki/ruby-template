@@ -37,6 +37,16 @@ script/bootstrap --production
 
 Gems will be installed locally into the `vendor/gems/` directory at the root of this repository.
 
+### Refreshing Dependencies
+
+Dependency refreshes should go through the explicit networked vendoring path:
+
+```bash
+script/vendor
+```
+
+This updates `Gemfile.lock` checksums, refreshes `vendor/cache/`, and enforces the Bundler cooldown from [`.github/dependabot.yml`](.github/dependabot.yml). Normal bootstrap, test, lint, and CI paths are expected to install from the committed lockfile and vendored gems instead of resolving from RubyGems.
+
 ### Testing
 
 After bootstrapping the project, you can run the test suite:
@@ -134,4 +144,4 @@ This project adopts a "vendor everything" approach to dependencies. This means t
 
 All Ruby Gems are committed to version control and stored in the [`vendor/cache/`](vendor/cache/) directory.
 
-This behavior is further controlled by the [`.bundle/config`](./.bundle/config) file.
+This behavior is further controlled by the [`.bundle/config`](./.bundle/config) file. The bundle is frozen by default, so dependency changes should be made with `script/vendor` and committed with the updated `Gemfile.lock` checksums and `vendor/cache/` contents.
