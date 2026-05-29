@@ -2,16 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "octokit"
-
 group :development do
-  gem "docker-api"
-  gem "irb"
-  gem "rspec"
-  gem "rubocop"
-  gem "rubocop-github"
-  gem "rubocop-performance"
-  gem "rubocop-rspec"
-  gem "simplecov"
-  gem "simplecov-erb"
+  gem "rspec", "3.13.2"
+  gem "rubocop", "1.86.1"
 end

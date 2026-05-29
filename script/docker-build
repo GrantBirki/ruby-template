@@ -1,7 +1,10 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-source script/env "$@"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$HERE/env" "$@"
+
+cd "$DIR"
 
 docker build --build-arg "RUBY_VERSION=$RBENV_VERSION" -t "$REPO_NAME:latest" .

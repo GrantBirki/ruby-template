@@ -1,8 +1,11 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
-set -e # prevent any kind of script failures
+set -euo pipefail
 
-source script/env "$@"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$HERE/env" "$@"
+
+cd "$DIR"
 
 KEEP_UP=false
 COMPOSE_FILE="./docker-compose.yml"
@@ -17,10 +20,22 @@ for arg in "$@"; do
 done
 
 # check to ensure docker is running
+cleanup() {
+  if [ "$KEEP_UP" == "false" ]; then
+    echo -e "${PURPLE}[#]${OFF} ${BLUE}Stopping docker processes${OFF}"
+    docker compose -f "$COMPOSE_FILE" down --remove-orphans -v -t 1
+    docker network prune --force
+  else
+    echo -e "${PURPLE}[#]${OFF} ${BLUE}Keeping docker processes up${OFF}"
+  fi
+}
+
 if ! docker info &> /dev/null; then
   echo -e "${RED}Docker is not running. Please start Docker and try again.${OFF}"
   exit 1
 fi
+
+trap cleanup EXIT
 
 echo -e "${PURPLE}[#]${OFF} ${BLUE}Killing old docker processes${OFF}"
 docker compose -f "$COMPOSE_FILE" down --remove-orphans -v -t 1
@@ -29,13 +44,5 @@ docker compose -f "$COMPOSE_FILE" up --build -d
 
 echo -e "${PURPLE}[#]${OFF} ${BLUE}Running acceptance tests${OFF}"
 bundle exec rspec spec/acceptance/acceptance_tests.rb
-
-if [ "$KEEP_UP" == "false" ]; then
-  echo -e "${PURPLE}[#]${OFF} ${BLUE}Stopping docker processes${OFF}"
-  docker compose -f "$COMPOSE_FILE" down --remove-orphans -v -t 1
-  docker network prune --force
-else
-  echo -e "${PURPLE}[#]${OFF} ${BLUE}Keeping docker processes up${OFF}"
-fi
 
 echo -e "${PURPLE}[#]${OFF} ${GREEN}Acceptance tests passed${OFF}"

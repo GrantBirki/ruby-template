@@ -3,7 +3,7 @@
 require "spec_helper"
 require_relative "../../lib/example"
 
-describe RubyTemplate do
+RSpec.describe RubyTemplate do
   context "example" do
     rbt = RubyTemplate.new
 
@@ -26,5 +26,11 @@ describe RubyTemplate do
         rbt.simple_subtraction(1, "two")
       end.to raise_error(TypeError)
     end
+  end
+end
+
+RSpec.describe "CLI" do
+  it "prints the example result" do
+    expect { load File.join(ROOT, "lib/cli.rb") }.to output("3\n").to_stdout
   end
 end

@@ -1,6 +1,6 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
-set -e # prevent any kind of script failures
+set -euo pipefail
 
 # COLORS
 export OFF='\033[0m'
@@ -9,10 +9,17 @@ export GREEN='\033[0;32m'
 export BLUE='\033[0;34m'
 export PURPLE='\033[0;35m'
 
-# set RUBY_ENV to development (as a default) if not set
+# Set RUBY_ENV to development by default.
 : "${RUBY_ENV:=development}"
 
 export RUBY_ENV
+
+# Set the working directory to the root of the project.
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+export DIR
+
+export BUNDLE_GEMFILE="$DIR/Gemfile"
+export BUNDLE_APP_CONFIG="$DIR/.bundle"
 
 # Check for --production flag in arguments
 if [[ " $* " =~ " --production " ]]; then
@@ -20,19 +27,15 @@ if [[ " $* " =~ " --production " ]]; then
   export BUNDLE_WITHOUT="development"
 fi
 
-# set the working directory to the root of the project
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
-export DIR
-
-# The name of the repository is the name of the directory (usually)
-REPO_NAME=$(basename "$PWD")
+# The name of the repository is the name of the root directory.
+REPO_NAME=$(basename "$DIR")
 export REPO_NAME
 
 TARBALL_DIR="$DIR/tarballs"
 export TARBALL_DIR
 
 # set the ruby version to the one specified in the .ruby-version file
-[ -z "$RBENV_VERSION" ] && RBENV_VERSION=$(cat "$DIR/.ruby-version")
+[ -z "${RBENV_VERSION:-}" ] && RBENV_VERSION=$(cat "$DIR/.ruby-version")
 export RBENV_VERSION
 
 # set the path to include the rbenv shims if they exist
@@ -40,15 +43,15 @@ export RBENV_VERSION
 [ -d "/usr/share/rbenv/shims" ] && export PATH=/usr/share/rbenv/shims:$PATH
 
 # detect OS version and architecture
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    PLATFORM="linux"
-    VERSION=$(grep '^VERSION_CODENAME=' /etc/os-release | cut -d '=' -f2 || echo "unknown")
+if [[ "${OSTYPE:-}" == "linux-gnu"* ]]; then
+  PLATFORM="linux"
+  VERSION=$(grep '^VERSION_CODENAME=' /etc/os-release | cut -d '=' -f2 || echo "unknown")
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    PLATFORM="macos"
-    VERSION=$(sw_vers -productVersion || echo "unknown")
+  PLATFORM="macos"
+  VERSION=$(sw_vers -productVersion || echo "unknown")
 else
-    PLATFORM="unknown"
-    VERSION="unknown"
+  PLATFORM="unknown"
+  VERSION="unknown"
 fi
 
 ARCH=$(uname -m || echo "unknown")
@@ -57,11 +60,10 @@ export PLATFORM
 export VERSION
 export ARCH
 
-shopt -s nocasematch # enable case-insensitive matching
+shopt -s nocasematch
 if [[ "$RUBY_ENV" == "production" ]]; then
   export BUNDLE_WITHOUT="development"
 fi
-shopt -u nocasematch # disable case-insensitive matching
+shopt -u nocasematch
 
-# make the vendor/cache directory if it doesn't exist
 mkdir -p "$DIR/vendor/cache"

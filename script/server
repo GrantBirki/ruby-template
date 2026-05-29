@@ -1,8 +1,11 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-source script/env "$@"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$HERE/env" "$@"
+
+cd "$DIR"
 
 # Add your own logic below for running a ruby application
 bundle exec ruby lib/cli.rb
