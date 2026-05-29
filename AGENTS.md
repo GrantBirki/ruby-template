@@ -66,6 +66,9 @@ location, and idempotent cleanup where practical.
 Tests are powered by RSpec. Coverage is powered by Ruby stdlib `Coverage`, not
 SimpleCov or generated HTML reports.
 
+Use the normal RSpec DSL in specs: prefer `describe RubyTemplate do` over
+`RSpec.describe RubyTemplate do`.
+
 Keep `lib/**/*.rb` at 100% line coverage. If new executable files are added
 under `lib/`, add focused specs rather than weakening the coverage gate.
 

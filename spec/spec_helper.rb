@@ -18,7 +18,6 @@ def relative_coverage_path(path)
 end
 
 RSpec.configure do |config|
-  config.disable_monkey_patching!
   config.expect_with(:rspec) { |expectations| expectations.syntax = :expect }
 
   config.after(:suite) do
