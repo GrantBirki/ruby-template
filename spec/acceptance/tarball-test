@@ -1,8 +1,11 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-source script/env "$@"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd ../.. && pwd)"
+source "$HERE/script/env" "$@"
+
+cd "$DIR"
 
 # set BUILD_SHA and BUILD_BRANCH if they are not already set
 : "${BUILD_SHA:=$(git rev-parse HEAD)}"
@@ -17,9 +20,9 @@ result=$(docker run --rm "$REPO_NAME-tarball-test:latest" bash -c "/app/script/s
 
 # Check if the result is exactly 3
 if [[ "$result" == "3" ]]; then
-    echo -e "\n✅ Test passed: Output is 3 as expected"
-    exit 0
+  echo -e "\n✅ Test passed: Output is 3 as expected"
+  exit 0
 else
-    echo -e "\n❌ Test failed: Expected output to be 3, but got: $result"
-    exit 1
+  echo -e "\n❌ Test failed: Expected output to be 3, but got: $result"
+  exit 1
 fi

@@ -55,7 +55,7 @@ After bootstrapping the project, you can run the test suite:
 script/test
 ```
 
-By default, this project enforces 100% code coverage. After running `script/test`, you can view the code coverage report in the `coverage/` directory at the root of the repository.
+By default, this project enforces 100% line coverage for `lib/**/*.rb` using Ruby's standard library `Coverage` API. The test path does not depend on coverage gems or generated HTML reports.
 
 ### Linting
 
@@ -99,7 +99,7 @@ This script:
 1. Builds a Docker image using the `Dockerfile` in the root of the repository.
 2. Inside of the Docker container it:
     1. Install all dependencies
-    2. Creates a compressed tarball with all the source code and dependencies. The dependenices are even pre-installed to save time when deploying the application. This means that the `vendor/cache/*.gem` files have been installed via bundler into the `vendor/gems/` directory.
+    2. Creates a compressed tarball with all the source code and dependencies. The dependencies are even pre-installed to save time when deploying the application. This means that the `vendor/cache/*.gem` files have been installed via bundler into the `vendor/gems/` directory.
     3. Adds commit metadata to the tarball by dropping `BUILD_SHA` and `BUILD_BRANCH` files in the root of the tarball
 3. Drops the tarball in the `tarballs/` directory at the root of the repository.
 
@@ -145,3 +145,5 @@ This project adopts a "vendor everything" approach to dependencies. This means t
 All Ruby Gems are committed to version control and stored in the [`vendor/cache/`](vendor/cache/) directory.
 
 This behavior is further controlled by the [`.bundle/config`](./.bundle/config) file. The bundle is frozen by default, so dependency changes should be made with `script/vendor` and committed with the updated `Gemfile.lock` checksums and `vendor/cache/` contents.
+
+The default template dependency set is intentionally small: RSpec for tests and RuboCop for linting. Prefer Ruby standard library features before adding new gems.

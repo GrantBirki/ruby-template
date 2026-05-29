@@ -28,3 +28,9 @@ describe RubyTemplate do
     end
   end
 end
+
+describe "CLI" do
+  it "prints the example result" do
+    expect { load File.join(ROOT, "lib/cli.rb") }.to output("3\n").to_stdout
+  end
+end

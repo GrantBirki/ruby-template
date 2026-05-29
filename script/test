@@ -1,18 +1,31 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-source script/env "$@"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$HERE/env" "$@"
+
+cd "$DIR"
 
 validate_bundler_supply_chain() {
   ruby -rbundler -ryaml - "$DIR" <<'RUBY'
 root = ARGV.fetch(0)
 failures = []
 
-config_path = File.join(root, ".bundle/config")
-config = YAML.safe_load(File.read(config_path), permitted_classes: [], permitted_symbols: [], aliases: false)
-unless config.fetch("BUNDLE_FROZEN", nil) == "true"
-  failures << ".bundle/config must set BUNDLE_FROZEN: \"true\""
+config = YAML.safe_load_file(
+  File.join(root, ".bundle/config"),
+  permitted_classes: [],
+  permitted_symbols: [],
+  aliases: false
+)
+required_config = {
+  "BUNDLE_FROZEN" => "true",
+  "BUNDLE_PATH" => "vendor/gems",
+  "BUNDLE_CACHE_PATH" => "vendor/cache",
+  "BUNDLE_NO_INSTALL" => "true"
+}
+required_config.each do |key, value|
+  failures << ".bundle/config must set #{key}: #{value.inspect}" unless config[key] == value
 end
 
 lock_path = File.join(root, "Gemfile.lock")
@@ -140,40 +153,6 @@ RUBY
 validate_bundler_supply_chain
 validate_ci_workflow_security
 
-# run tests
 echo -e "\n🧪 ${BLUE}Running tests: $(date "+%H:%M:%S")${OFF}\n"
 
-bundle exec bin/rspec spec && rspec_exit=$? || rspec_exit=$?
-
-total_coverage=$(cat "$DIR/coverage/total-coverage.txt")
-
-if grep -q "100.0" "$DIR/coverage/total-coverage.txt"; then
-  cov_exit=0
-  echo -e "\n✅ Total Coverage: ${GREEN}$total_coverage${OFF}"
-else
-  cov_exit=1
-  echo -e "\n❌ Total Coverage: ${RED}$total_coverage${OFF}"
-fi
-
-echo ""
-echo "---------------------------------------"
-echo "📊 Summary Results"
-echo "---------------------------------------"
-echo ""
-
-if [[ $rspec_exit == 0 ]]; then
-  echo -e "✅ ${GREEN}rspec:    exitcode=${rspec_exit}${OFF}"
-else
-  echo -e "❌ ${RED}rspec:    exitcode=${rspec_exit}${OFF}"
-fi
-
-if [[ $cov_exit == 0 ]]; then
-  echo -e "✅ ${GREEN}coverage: exitcode=${cov_exit}${OFF}"
-else
-  echo -e "❌ ${RED}coverage: exitcode=${cov_exit}${OFF}"
-fi
-
-[ "$rspec_exit" -gt 0 ] && exit 1
-[ $cov_exit -gt 0 ] && exit 1
-
-exit 0
+bundle exec rspec spec

@@ -12,11 +12,11 @@ ROOT = File.expand_path("..", __dir__)
 DEPENDABOT_PATH = File.join(ROOT, ".github/dependabot.yml")
 LOCKFILE_PATH = File.join(ROOT, "Gemfile.lock")
 LOCK_COMMAND = ["bundle", "lock", "--add-checksums"].freeze
-CACHE_COMMAND = ["bundle", "cache", "--all-platforms", "--no-install"].freeze
+CACHE_COMMAND = ["bundle", "cache", "--all", "--all-platforms", "--no-install"].freeze
 
 ENV["RBENV_VERSION"] ||= File.read(File.join(ROOT, ".ruby-version")).strip
 rbenv_shims = File.join(Dir.home, ".rbenv/shims")
-ENV["PATH"] = "#{rbenv_shims}:#{ENV.fetch("PATH")}" if Dir.exist?(rbenv_shims)
+ENV["PATH"] = "#{rbenv_shims}:#{ENV.fetch('PATH')}" if Dir.exist?(rbenv_shims)
 
 module RubyTemplate
   LockedGem = Struct.new(:name, :version, keyword_init: true)
@@ -31,7 +31,7 @@ module RubyTemplate
       data = YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)
       updates = Array(data.fetch("updates"))
       update = updates.find { |entry| entry["package-ecosystem"] == "bundler" && entry["directory"] == "/" } ||
-        updates.find { |entry| entry["package-ecosystem"] == "bundler" }
+               updates.find { |entry| entry["package-ecosystem"] == "bundler" }
       raise VendorError, "dependabot config has no bundler update entry" unless update
 
       days = update.dig("cooldown", "default-days")
@@ -140,8 +140,7 @@ module RubyTemplate
       metadata = @client.versions(locked_gem.name).find do |version|
         version_number = version.fetch("number", "").to_s
         platform = version.fetch("platform", "ruby").to_s
-        locked_gem.version == version_number ||
-          locked_gem.version == "#{version_number}-#{platform}"
+        [version_number, "#{version_number}-#{platform}"].include?(locked_gem.version)
       end
       return metadata if metadata
 
@@ -240,11 +239,11 @@ module RubyTemplate
     end
 
     def run_command(command)
-      puts "→ #{command.join(" ")}"
+      puts "→ #{command.join(' ')}"
       return if dry_run?
 
       ok = system({ "BUNDLE_FROZEN" => "false" }, *command, chdir: ROOT)
-      raise VendorError, "command failed: #{command.join(" ")}" unless ok
+      raise VendorError, "command failed: #{command.join(' ')}" unless ok
     end
 
     def enforce_cooldown(policy, original_lockfile)
