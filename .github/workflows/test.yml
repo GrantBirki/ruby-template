@@ -15,8 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: GrantBirki/fence@eb175bb3c7d4b28007e01d2c26b93ea8df820e6f
-
       - name: checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6
         with:
@@ -26,6 +24,8 @@ jobs:
         with:
           bundler: none
           bundler-cache: false
+
+      - uses: GrantBirki/fence@eb175bb3c7d4b28007e01d2c26b93ea8df820e6f
 
       - name: bootstrap
         run: script/bootstrap
