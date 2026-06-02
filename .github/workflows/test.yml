@@ -32,3 +32,13 @@ jobs:
 
       - name: test
         run: script/test
+
+      - name: fence check
+        run: |
+          echo "testing fence"
+
+          echo "should pass"
+          curl -I https://api.github.com
+
+          echo "should fail:"
+          curl -I https://www.google.com
