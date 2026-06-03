@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: GrantBirki/fence@ea6de9d504c70a7b3fbe025dcc9fb2718a28f3da
+      - uses: GrantBirki/fence@cb16e16f665de73e4d9b253efb510d7afbc212b7
         with:
           mode: audit
 
