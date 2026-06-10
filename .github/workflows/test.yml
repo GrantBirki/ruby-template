@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: GrantBirki/fence@0e66f5f29993216ba82202a596b74ab903f2390e
         with:
-          mode: audit
+          mode: block
 
       - name: checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6
