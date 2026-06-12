@@ -83,6 +83,7 @@ validate_ci_workflow_security() {
   ruby -ryaml - "$DIR" <<'RUBY'
 root = ARGV.fetch(0)
 failures = []
+sealed_workflows = %w[build.yml lint.yml test.yml]
 workflow_paths = Dir[File.join(root, ".github/workflows/*.{yml,yaml}")].sort
 
 workflow_paths.each do |path|
@@ -108,6 +109,35 @@ workflow_paths.each do |path|
 
   jobs.each do |job_name, job|
     steps = Array(job.fetch("steps", []))
+    if sealed_workflows.include?(workflow_name)
+      guard = steps.first || {}
+      guard_uses = guard.fetch("uses", "")
+      guard_with = guard.fetch("with", {})
+
+      if guard_uses.start_with?("GrantBirki/fence@")
+        unless guard_with["mode"] == "block"
+          failures << "#{relative}:#{job_name} Fence must use mode: block"
+        end
+        if guard_with.key?("config")
+          failures << "#{relative}:#{job_name} Fence must use auditable native inputs, not raw config"
+        end
+        if guard_with.key?("container_policy") && guard_with["container_policy"] != "disable"
+          failures << "#{relative}:#{job_name} Fence must disable container access"
+        end
+      elsif guard_uses.start_with?("step-security/harden-runner@")
+        unless guard_with["egress-policy"] == "block"
+          failures << "#{relative}:#{job_name} harden-runner must use egress-policy: block"
+        end
+        unless guard_with["disable-telemetry"] == true
+          failures << "#{relative}:#{job_name} harden-runner must disable telemetry"
+        end
+        unless guard_with["disable-sudo-and-containers"] == true
+          failures << "#{relative}:#{job_name} harden-runner must disable sudo and containers"
+        end
+      else
+        failures << "#{relative}:#{job_name} must run an approved network guard as the first step"
+      end
+    end
 
     steps.each do |step|
       uses = step.fetch("uses", "")
