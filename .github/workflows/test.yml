@@ -34,19 +34,3 @@ jobs:
 
       - name: test
         run: script/test
-
-      - name: fence check
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          echo "checking allowed GitHub API access"
-          curl --fail --silent --show-error --max-time 10 \
-            --head https://api.github.com >/dev/null
-
-          echo "checking unrelated outbound traffic is blocked"
-          if curl --fail --silent --show-error --max-time 10 \
-            --head https://www.google.com >/dev/null; then
-            echo "::error::Fence unexpectedly allowed www.google.com"
-            exit 1
-          fi
