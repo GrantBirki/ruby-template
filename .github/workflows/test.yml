@@ -15,15 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: harden runner
-        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # pin@v2.19.3
+      - uses: GrantBirki/fence@6022dc6935ceb0f7f5bcc9a467614a06c5ca6ddc
         with:
-          egress-policy: block
-          disable-telemetry: true
-          allowed-endpoints: >
-            github.com:443
-            release-assets.githubusercontent.com:443
-          disable-sudo-and-containers: true
+          mode: block
 
       - name: checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6
