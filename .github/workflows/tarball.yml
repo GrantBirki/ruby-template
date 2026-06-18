@@ -19,6 +19,8 @@ jobs:
 
     steps:
       - uses: GrantBirki/fence@6022dc6935ceb0f7f5bcc9a467614a06c5ca6ddc # pin@main
+        with:
+          container_policy: unsafe_preserve
 
       - name: checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6
