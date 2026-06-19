@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: GrantBirki/fence@f420993f1cc71720286e1beea00a2de3f2bb604d # pin@main
+      - uses: GrantBirki/fence@a4e21d1ed60d8f8ddc9906378d2422a220e742ca # pin@main
 
       - name: checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6
