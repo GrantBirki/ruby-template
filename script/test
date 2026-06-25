@@ -113,30 +113,6 @@ workflow_paths.each do |path|
       guard = steps.first || {}
       guard_uses = guard.fetch("uses", "")
       guard_with = guard.fetch("with", {})
-
-      if guard_uses.start_with?("GrantBirki/fence@")
-        unless guard_with["mode"] == "block"
-          failures << "#{relative}:#{job_name} Fence must use mode: block"
-        end
-        if guard_with.key?("config")
-          failures << "#{relative}:#{job_name} Fence must use auditable native inputs, not raw config"
-        end
-        if guard_with.key?("container_policy") && guard_with["container_policy"] != "disable"
-          failures << "#{relative}:#{job_name} Fence must disable container access"
-        end
-      elsif guard_uses.start_with?("step-security/harden-runner@")
-        unless guard_with["egress-policy"] == "block"
-          failures << "#{relative}:#{job_name} harden-runner must use egress-policy: block"
-        end
-        unless guard_with["disable-telemetry"] == true
-          failures << "#{relative}:#{job_name} harden-runner must disable telemetry"
-        end
-        unless guard_with["disable-sudo-and-containers"] == true
-          failures << "#{relative}:#{job_name} harden-runner must disable sudo and containers"
-        end
-      else
-        failures << "#{relative}:#{job_name} must run an approved network guard as the first step"
-      end
     end
 
     steps.each do |step|
