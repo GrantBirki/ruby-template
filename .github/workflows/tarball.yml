@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: GrantBirki/fence@749baf09a2f94371ebfe439997758604a26e2789 # pin@main
+      - uses: GrantBirki/fence@ac903ba12fdf9c4562a4786c53e10c8024a1dd1e # pin@main
         with:
           container_policy: unsafe_preserve
           allowlist: |
