@@ -7,4 +7,4 @@ source "$HERE/env" "$@"
 
 cd "$DIR"
 
-docker build --build-arg "RUBY_VERSION=$RBENV_VERSION" -t "$REPO_NAME:latest" .
+docker build -t "$REPO_NAME:latest" .

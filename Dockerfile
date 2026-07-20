@@ -1,15 +1,9 @@
-ARG RUBY_VERSION=3
-FROM ruby:${RUBY_VERSION}-slim AS base
+FROM ruby:4.0.2@sha256:807b8f3d32280ca472bbc0a270fb34672c65e82c4096b84252894596b36e530f AS base
 
 # create a nonroot user
 RUN useradd -m nonroot
 
 WORKDIR /app
-
-# install system dependencies
-RUN apt-get -qq update && apt-get --no-install-recommends install -y build-essential git && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
 
 # set the BUNDLE_APP_CONFIG environment variable
 ENV BUNDLE_APP_CONFIG=/app/.bundle

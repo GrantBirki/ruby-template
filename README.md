@@ -55,7 +55,7 @@ After bootstrapping the project, you can run the test suite:
 script/test
 ```
 
-By default, this project enforces 100% line coverage for `lib/**/*.rb` using Ruby's standard library `Coverage` API. The test path does not depend on coverage gems or generated HTML reports.
+By default, this project enforces 100% line, branch, and method coverage for `lib/**/*.rb` using Ruby's standard library `Coverage` API. The test path does not depend on coverage gems or generated HTML reports.
 
 ### Linting
 

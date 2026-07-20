@@ -8,7 +8,7 @@ source "$HERE/env" "$@"
 cd "$DIR"
 
 validate_bundler_supply_chain() {
-  ruby -rbundler -ryaml - "$DIR" <<'RUBY'
+  ruby -rbundler -rdigest -ryaml - "$DIR" <<'RUBY'
 root = ARGV.fetch(0)
 failures = []
 
@@ -72,6 +72,49 @@ extra_cache = actual_cache - expected_cache
 missing_cache.each { |gem| failures << "missing cached gem: vendor/cache/#{gem}" }
 extra_cache.each { |gem| failures << "extra cached gem: vendor/cache/#{gem}" }
 
+specs.each do |spec|
+  platform = spec.platform.to_s
+  checksum_version = platform == "ruby" ? spec.version.to_s : "#{spec.version}-#{platform}"
+  expected_checksum = checksum_entries[[spec.name, checksum_version]]
+  gem_name = "#{spec.full_name}.gem"
+  gem_path = File.join(cache_dir, gem_name)
+  next unless expected_checksum && File.file?(gem_path)
+
+  actual_checksum = Digest::SHA256.file(gem_path).hexdigest
+  next if actual_checksum == expected_checksum
+
+  failures << "checksum mismatch for vendor/cache/#{gem_name}: expected #{expected_checksum}, got #{actual_checksum}"
+end
+
+unless failures.empty?
+  warn failures.join("\n")
+  exit 1
+end
+RUBY
+}
+
+validate_docker_image_pins() {
+  ruby -ropen3 - "$DIR" <<'RUBY'
+root = ARGV.fetch(0)
+failures = []
+ruby_version = File.read(File.join(root, ".ruby-version")).strip
+tracked_files, status = Open3.capture2("git", "-C", root, "ls-files", "-z")
+abort "unable to list tracked files" unless status.success?
+
+dockerfiles = tracked_files.split("\0").select { |path| File.basename(path).start_with?("Dockerfile") }
+failures << "no tracked Dockerfiles found" if dockerfiles.empty?
+
+dockerfiles.each do |relative|
+  File.readlines(File.join(root, relative)).each_with_index do |line, index|
+    match = line.match(/\AFROM\s+(?:--platform=\S+\s+)?(?<image>\S+)/i)
+    next unless match
+
+    image = match[:image]
+    expected = /\Aruby:#{Regexp.escape(ruby_version)}(?:-[a-z0-9.-]+)?@sha256:[0-9a-f]{64}\z/i
+    failures << "#{relative}:#{index + 1} Docker image must use ruby:#{ruby_version} with a sha256 manifest digest: #{image}" unless image.match?(expected)
+  end
+end
+
 unless failures.empty?
   warn failures.join("\n")
   exit 1
@@ -83,12 +126,10 @@ validate_ci_workflow_security() {
   ruby -ryaml - "$DIR" <<'RUBY'
 root = ARGV.fetch(0)
 failures = []
-sealed_workflows = %w[build.yml lint.yml test.yml]
 workflow_paths = Dir[File.join(root, ".github/workflows/*.{yml,yaml}")].sort
 
 workflow_paths.each do |path|
   relative = path.delete_prefix("#{root}/")
-  workflow_name = File.basename(path)
   workflow = YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)
   jobs = workflow.fetch("jobs", {})
 
@@ -109,10 +150,9 @@ workflow_paths.each do |path|
 
   jobs.each do |job_name, job|
     steps = Array(job.fetch("steps", []))
-    if sealed_workflows.include?(workflow_name)
-      guard = steps.first || {}
-      guard_uses = guard.fetch("uses", "")
-      guard_with = guard.fetch("with", {})
+    guard_uses = (steps.first || {}).fetch("uses", "")
+    unless guard_uses.match?(/\AGrantBirki\/fence@[0-9a-f]{40}\z/i)
+      failures << "#{relative}:#{job_name} must run a full-SHA-pinned GrantBirki/fence action first"
     end
 
     steps.each do |step|
@@ -140,6 +180,7 @@ RUBY
 }
 
 validate_bundler_supply_chain
+validate_docker_image_pins
 validate_ci_workflow_security
 
 echo -e "\n🧪 ${BLUE}Running tests: $(date "+%H:%M:%S")${OFF}\n"
