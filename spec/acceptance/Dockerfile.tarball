@@ -7,16 +7,11 @@ RUN useradd -m nonroot
 
 WORKDIR /app
 
-RUN mkdir -p temp/
-
 # copy tarfile
-COPY --chown=nonroot:nonroot ${TARBALL} ./temp/${TARBALL}
+COPY --chown=nonroot:nonroot ${TARBALL} /tmp/app.tar.gz
 
-# extract tarfile
-RUN tar -zxvf ./temp/${TARBALL} -C /app
-
-# remove the temp directory
-RUN rm -rf ./temp
+# extract the tarfile and remove it from the image layer
+RUN tar -zxvf /tmp/app.tar.gz -C /app && rm /tmp/app.tar.gz
 
 # change ownership of /app directory to nonroot user
 RUN chown -R nonroot:nonroot /app
