@@ -13,7 +13,7 @@ cd "$DIR"
 
 tarball_name="${PLATFORM}-${ARCH}-${VERSION}-${BUILD_SHA}.tar.gz"
 
-docker build --build-arg "RUBY_VERSION=$RBENV_VERSION" --build-arg "TARBALL=tarballs/$tarball_name" -t "$REPO_NAME-tarball-test:latest" .
+docker build --file spec/acceptance/Dockerfile.tarball --build-arg "TARBALL=tarballs/$tarball_name" -t "$REPO_NAME-tarball-test:latest" .
 
 # Run the container and capture the output
 result=$(docker run --rm "$REPO_NAME-tarball-test:latest" bash -c "/app/script/server --production")
