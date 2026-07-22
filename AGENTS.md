@@ -48,7 +48,7 @@ Shell scripts should use `#!/usr/bin/env bash`, `set -euo pipefail`, repository-
 ## CI And GitHub
 
 - Keep every external `uses:` reference pinned to a full commit SHA.
-- Run a full-SHA-pinned `GrantBirki/fence` action as the first step in each workflow job.
+- Run a full-SHA-pinned `openai/fence` action as the first step in each workflow job.
 - Keep workflow permissions minimal and set `persist-credentials: false` on checkout.
 - Configure `ruby/setup-ruby` with `bundler: none` and `bundler-cache: false` so Bundler uses the committed cache.
 - Keep `script/**` excluded from GitHub language statistics through `.gitattributes`.
