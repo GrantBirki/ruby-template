@@ -151,8 +151,8 @@ workflow_paths.each do |path|
   jobs.each do |job_name, job|
     steps = Array(job.fetch("steps", []))
     guard_uses = (steps.first || {}).fetch("uses", "")
-    unless guard_uses.match?(/\AGrantBirki\/fence@[0-9a-f]{40}\z/i)
-      failures << "#{relative}:#{job_name} must run a full-SHA-pinned GrantBirki/fence action first"
+    unless guard_uses.match?(/\Aopenai\/fence@[0-9a-f]{40}\z/i)
+      failures << "#{relative}:#{job_name} must run a full-SHA-pinned openai/fence action first"
     end
 
     steps.each do |step|

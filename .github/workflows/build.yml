@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - if: matrix.os == 'ubuntu-latest'
-        uses: GrantBirki/fence@f36dcb2cd9020e452f532d6675a6554f8bfb8d3b # pin@v0.8.0
+        uses: openai/fence@bbe8d131a54284a78390dbc2ce06893019830913 # pin@v0.8.4
 
       - name: checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6
