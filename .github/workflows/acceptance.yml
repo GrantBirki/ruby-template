@@ -24,11 +24,11 @@ jobs:
             production.cloudfront.docker.com
 
       - name: checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # pin@v6
         with:
           persist-credentials: false
 
-      - uses: ruby/setup-ruby@4c56a21280b36d862b5fc31348f463d60bdc55d5 # pin@v1.301.0
+      - uses: ruby/setup-ruby@12fd324f1d0b43274fdc8130f6980590a667c455 # pin@v1.312.0
         with:
           bundler: none
           bundler-cache: false
