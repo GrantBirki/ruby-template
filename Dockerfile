@@ -1,4 +1,4 @@
-FROM ruby:4.0.2@sha256:807b8f3d32280ca472bbc0a270fb34672c65e82c4096b84252894596b36e530f AS base
+FROM ruby:4.0.4@sha256:8b9d39df3e5a2e6b8a488fd07e58d9589ab8fbce79afdabf8b141eb359eafeea AS base
 
 # create a nonroot user
 RUN useradd -m nonroot
