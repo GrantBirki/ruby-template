@@ -20,14 +20,14 @@ jobs:
 
     steps:
       - if: matrix.os == 'ubuntu-latest'
-        uses: openai/fence@c22db5d5c19f83d1d7b40e9def37a7a6099bbca2 # pin@v0.8.10
+        uses: openai/fence@2531879270796c42acfeb300e5bba8b6973f23d3 # pin@v0.9.1
 
       - name: checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # pin@v6
         with:
           persist-credentials: false
 
-      - uses: ruby/setup-ruby@4c56a21280b36d862b5fc31348f463d60bdc55d5 # pin@v1.301.0
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # pin@v1.321.0
         with:
           bundler: none
           bundler-cache: false
