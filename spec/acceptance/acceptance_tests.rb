@@ -2,7 +2,7 @@
 
 require "json"
 require "open3"
-require "rspec"
+require "rspec/core"
 
 MAX_WAIT_TIME = 30 # how long to wait for the container to complete
 

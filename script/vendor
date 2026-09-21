@@ -12,7 +12,7 @@ ROOT = File.expand_path("..", __dir__)
 DEPENDABOT_PATH = File.join(ROOT, ".github/dependabot.yml")
 LOCKFILE_PATH = File.join(ROOT, "Gemfile.lock")
 LOCK_COMMAND = ["bundle", "lock", "--add-checksums"].freeze
-CACHE_COMMAND = ["bundle", "cache", "--all", "--all-platforms", "--no-install"].freeze
+CACHE_COMMAND = ["bundle", "cache", "--all-platforms", "--no-install"].freeze
 
 ENV["RBENV_VERSION"] ||= File.read(File.join(ROOT, ".ruby-version")).strip
 rbenv_shims = File.join(Dir.home, ".rbenv/shims")
@@ -179,10 +179,12 @@ module RubyTemplate
     def initialize(argv:)
       @argv = argv.dup
       @dry_run = false
+      @update = false
     end
 
     def run
       original_lockfile = nil
+      cooldown_validated = false
       parse_args!
       policy = DependabotCooldownPolicy.load(DEPENDABOT_PATH)
       puts "📦 ruby-template vendor"
@@ -191,19 +193,21 @@ module RubyTemplate
       puts "🧊 RubyGems cooldown: #{policy.days} days from #{relative_path(policy.source_path)}"
 
       original_lockfile = read_lockfile unless dry_run?
-      run_command(LOCK_COMMAND)
+      lock_command = @update ? ["bundle", "lock", "--update", "--add-checksums"] : LOCK_COMMAND
+      run_command(lock_command)
       enforce_cooldown(policy, original_lockfile) unless dry_run?
+      cooldown_validated = true
       run_command(CACHE_COMMAND)
       puts "✅ Vendored Ruby dependencies are refreshed."
       0
-    rescue ReleaseCooldownError => e
-      restore_lockfile(original_lockfile)
-      warn e.message
-      warn "Gemfile.lock was restored to its pre-vendor state." if original_lockfile
-      1
     rescue VendorError => e
       warn e.message
       1
+    ensure
+      if original_lockfile && !cooldown_validated
+        restore_lockfile(original_lockfile)
+        warn "Gemfile.lock was restored to its pre-vendor state."
+      end
     end
 
     private
@@ -218,6 +222,8 @@ module RubyTemplate
         case arg
         when "--dry-run", "-n"
           @dry_run = true
+        when "--update"
+          @update = true
         when "--help", "-h"
           puts usage
           exit 0
@@ -231,9 +237,10 @@ module RubyTemplate
 
     def usage
       <<~USAGE
-        Usage: script/vendor [--dry-run]
+        Usage: script/vendor [--update] [--dry-run]
 
         Refresh vendored Ruby gems and Gemfile.lock checksums.
+        Use --update to resolve newer versions allowed by Gemfile.
         RubyGems release age is enforced from .github/dependabot.yml.
       USAGE
     end
@@ -279,4 +286,4 @@ module RubyTemplate
   end
 end
 
-exit RubyTemplate::Vendor.new(argv: ARGV).run
+exit RubyTemplate::Vendor.new(argv: ARGV).run if $PROGRAM_NAME == __FILE__

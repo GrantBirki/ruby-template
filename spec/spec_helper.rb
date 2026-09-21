@@ -7,7 +7,7 @@ COVERAGE_TARGETS = Dir[File.join(ROOT, "lib/**/*.rb")].map { |path| File.realpat
 
 Coverage.start(lines: true, branches: true, methods: true)
 
-require "rspec"
+require "rspec/core"
 
 def relative_coverage_path(path)
   path.delete_prefix("#{ROOT}/")
