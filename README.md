@@ -47,6 +47,8 @@ script/vendor
 
 This updates `Gemfile.lock` checksums, refreshes `vendor/cache/`, and enforces the Bundler cooldown from [`.github/dependabot.yml`](.github/dependabot.yml). Normal bootstrap, test, lint, and CI paths are expected to install from the committed lockfile and vendored gems instead of resolving from RubyGems.
 
+Use `script/vendor --update` to update all locked gems within the exact versions pinned in `Gemfile`. New versions must pass the same cooldown before they are cached; if cooldown rejects an update, the previous lockfile is restored.
+
 ### Testing
 
 After bootstrapping the project, you can run the test suite:
@@ -146,4 +148,4 @@ All Ruby Gems are committed to version control and stored in the [`vendor/cache/
 
 This behavior is further controlled by the [`.bundle/config`](./.bundle/config) file. The bundle is frozen by default, so dependency changes should be made with `script/vendor` and committed with the updated `Gemfile.lock` checksums and `vendor/cache/` contents.
 
-The default template dependency set is intentionally small: RSpec for tests and RuboCop for linting. Prefer Ruby standard library features before adding new gems.
+The default template dependency set is intentionally small: RSpec Core and Expectations for tests and RuboCop for linting. RSpec Mocks is not included because the template's tests do not use mocks. Prefer Ruby standard library features before adding new gems.
