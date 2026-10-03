@@ -149,3 +149,5 @@ All Ruby Gems are committed to version control and stored in the [`vendor/cache/
 This behavior is further controlled by the [`.bundle/config`](./.bundle/config) file. The bundle is frozen by default, so dependency changes should be made with `script/vendor` and committed with the updated `Gemfile.lock` checksums and `vendor/cache/` contents.
 
 The default template dependency set is intentionally small: RSpec Core and Expectations for tests and RuboCop for linting. RSpec Mocks is not included because the template's tests do not use mocks. Prefer Ruby standard library features before adding new gems.
+
+GitHub Actions workflows set `cache-mode: none` to prevent dependency cache restores and saves. Committed vendored dependencies and uploaded build artifacts remain separate from the Actions cache.

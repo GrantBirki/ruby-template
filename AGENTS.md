@@ -56,3 +56,7 @@ Shell scripts should use `#!/usr/bin/env bash`, `set -euo pipefail`, repository-
 ## Pull Requests
 
 Keep changes focused, review the complete dependency graph when it changes, and rely on CI rather than adding validation transcripts to the PR body.
+
+## Actions Cache Access
+
+GitHub Actions workflows set `cache-mode: none` to prevent dependency cache restores and saves. Committed vendored dependencies and uploaded build artifacts remain separate from the Actions cache.

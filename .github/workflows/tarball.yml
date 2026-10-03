@@ -12,6 +12,8 @@ on:
 permissions:
   contents: read
 
+cache-mode: none
+
 jobs:
   tarball:
     name: tarball
