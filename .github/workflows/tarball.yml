@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: openai/fence@63c516e78543f3d8d6088ebad6475a39920863bd # pin@v0.10.2
+      - uses: openai/fence@c7675fea986c29f1d655753a7a61fd6b4141be8f # pin@v0.13.0
         with:
           container_policy: unsafe_preserve
           allowlist: |
